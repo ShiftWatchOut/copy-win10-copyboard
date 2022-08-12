@@ -59,6 +59,7 @@
         "height": 600,
         "resizable": true,
         "title": "剪贴板",
+        "decorations": false,
         "width": 800
       }
     ]
