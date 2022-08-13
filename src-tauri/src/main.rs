@@ -10,6 +10,14 @@ fn main() {
     let hide_or_show = CustomMenuItem::new("hide_or_show", "隐藏/显示");
     let tray_menu = SystemTrayMenu::new().add_item(hide_or_show).add_item(quit);
     tauri::Builder::default()
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            if !cfg![debug_assertions] {
+                // 非调试模式都要隐藏任务栏图标
+                window.set_skip_taskbar(true).unwrap();
+            }
+            Ok(())
+        })
         .system_tray(SystemTray::new().with_menu(tray_menu))
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
