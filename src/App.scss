@@ -50,3 +50,39 @@ $title-height: 20px;
     }
   }
 }
+
+.copy-list {
+  padding: 16px;
+  overflow: auto;
+  height: 426px;
+  .copy-item {
+    background-color: #213547;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    .value {
+      text-align: left;
+      flex: 1;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .action {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        &:hover {
+          background-color: gray;
+        }
+      }
+    }
+  }
+}
