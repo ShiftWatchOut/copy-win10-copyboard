@@ -3,7 +3,25 @@
     windows_subsystem = "windows"
 )]
 
-use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use tauri::{CustomMenuItem, Manager, Runtime, SystemTray, SystemTrayEvent, SystemTrayMenu, Window};
+use std::thread;
+use std::time::Duration;
+
+#[derive(serde::Serialize, Clone)]
+struct Payload<'r> {
+    message: &'r str,
+}
+
+#[tauri::command]
+fn init_copy_watch<R: Runtime>(window: Window<R>) {
+    thread::spawn(move || {
+        println!("loop");
+        loop {
+            thread::sleep(Duration::from_secs(1));
+            window.emit("hello-event", Payload { message: "event-hello" }).unwrap()
+        }
+    });
+}
 
 fn main() {
     let quit = CustomMenuItem::new("quit", "退出");
@@ -16,6 +34,9 @@ fn main() {
                 // 非调试模式都要隐藏任务栏图标
                 window.set_skip_taskbar(true).unwrap();
             }
+            app.listen_global("hello-event", |event| {
+               println!("got hello-event with {:?}", event.payload());
+            });
             Ok(())
         })
         .system_tray(SystemTray::new().with_menu(tray_menu))
@@ -37,6 +58,7 @@ fn main() {
             },
             _ => {}
         })
+        .invoke_handler(tauri::generate_handler![init_copy_watch])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
