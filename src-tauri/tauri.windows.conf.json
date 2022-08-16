@@ -3,7 +3,7 @@
   "tauri": {
     "systemTray": {
       "iconPath": "icons/icon.ico",
-      "menuOnLeftClick": false
+      "menuOnLeftClick": true
     }
   }
 }
