@@ -1,11 +1,11 @@
 #![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
+all(not(debug_assertions), target_os = "windows"),
+windows_subsystem = "windows"
 )]
 
 mod clipboard_watch;
 
-use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use tauri::{CustomMenuItem, GlobalShortcutManager, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 
 fn main() {
     let quit = CustomMenuItem::new("quit", "退出");
@@ -21,6 +21,15 @@ fn main() {
             app.listen_global("hello-event", |event| {
                 println!("got hello-event with {:?}", event.payload());
             });
+            app.global_shortcut_manager().register("CommandOrControl+Shift+V", move || {
+                let is_visible = window.is_visible().unwrap();
+                if is_visible {
+                    window.hide().unwrap();
+                } else {
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+            }).unwrap();
             Ok(())
         })
         .system_tray(SystemTray::new().with_menu(tray_menu))
