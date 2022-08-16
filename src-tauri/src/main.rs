@@ -3,25 +3,9 @@
     windows_subsystem = "windows"
 )]
 
-use tauri::{CustomMenuItem, Manager, Runtime, SystemTray, SystemTrayEvent, SystemTrayMenu, Window};
-use std::thread;
-use std::time::Duration;
+mod clipboard_watch;
 
-#[derive(serde::Serialize, Clone)]
-struct Payload<'r> {
-    message: &'r str,
-}
-
-#[tauri::command]
-fn init_copy_watch<R: Runtime>(window: Window<R>) {
-    thread::spawn(move || {
-        println!("loop");
-        loop {
-            thread::sleep(Duration::from_secs(1));
-            window.emit("hello-event", Payload { message: "event-hello" }).unwrap()
-        }
-    });
-}
+use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 
 fn main() {
     let quit = CustomMenuItem::new("quit", "退出");
@@ -35,7 +19,7 @@ fn main() {
                 window.set_skip_taskbar(true).unwrap();
             }
             app.listen_global("hello-event", |event| {
-               println!("got hello-event with {:?}", event.payload());
+                println!("got hello-event with {:?}", event.payload());
             });
             Ok(())
         })
@@ -58,7 +42,7 @@ fn main() {
             },
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![init_copy_watch])
+        .plugin(clipboard_watch::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

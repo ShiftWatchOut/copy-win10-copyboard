@@ -9,20 +9,20 @@ let inited = false;
 
 function App() {
   useEffect(() => {
+    let unlisten: any;
     if (!inited) {
       inited = true
-      invoke("init_copy_watch").then(value => {
+      invoke("plugin:clipboard-watch|watch").then(value => {
         console.log('init then', value)
       }).catch(error => {
         console.log('init catch', error)
-      })
+      });
+      (async () => {
+        unlisten = await listen("hello-event", (event) => {
+          console.log('OHHHHHHHHHHHHHH', event.payload)
+        })
+      })()
     }
-    let unlisten: any;
-    (async () => {
-      unlisten = await listen("hello-event", (event) => {
-        console.log('OHHHHHHHHHHHHHH', event.payload)
-      })
-    })()
     return () => {
       unlisten?.()
     }
@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="App">
       <TitleBar/>
-      <CopyList />
+      <CopyList/>
     </div>
   )
 }
