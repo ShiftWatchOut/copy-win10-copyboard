@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "tauri:dev": "tauri dev",
+    "tauri:build": "CI=true && tauri build",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
