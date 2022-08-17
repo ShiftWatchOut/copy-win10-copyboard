@@ -44,7 +44,8 @@ fn main() {
                     if is_visible {
                         window.hide().unwrap();
                     } else {
-                        window.show().unwrap()
+                        window.show().unwrap();
+                        window.set_focus().unwrap();
                     }
                 }
                 _ => {}
