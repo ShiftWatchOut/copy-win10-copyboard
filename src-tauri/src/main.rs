@@ -4,8 +4,12 @@ windows_subsystem = "windows"
 )]
 
 mod clipboard_watch;
+mod platform_action;
 
-use tauri::{CustomMenuItem, GlobalShortcutManager, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use cocoa::appkit::NSWindow;
+use cocoa::base::{nil, YES};
+use tauri::{App, CustomMenuItem, GlobalShortcutManager, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use crate::platform_action::send_short_cut;
 
 fn main() {
     let quit = CustomMenuItem::new("quit", "退出");
@@ -18,7 +22,8 @@ fn main() {
                 // 非调试模式都要隐藏任务栏图标
                 window.set_skip_taskbar(true).unwrap();
             }
-            app.listen_global("hello-event", |event| {
+            app.listen_global("front-event", |event| {
+                send_short_cut();
                 println!("got hello-event with {:?}", event.payload());
             });
             app.global_shortcut_manager().register("CommandOrControl+Shift+V", move || {

@@ -2,7 +2,7 @@ import dots from "../assets/dots-horizontal.svg"
 import pin from "../assets/pin.svg"
 import React, {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api";
-import {listen} from "@tauri-apps/api/event";
+import {emit, listen} from "@tauri-apps/api/event";
 import {writeText} from "@tauri-apps/api/clipboard";
 import {appWindow} from "@tauri-apps/api/window";
 
@@ -26,8 +26,10 @@ const CopyList = () => {
         unlisten?.()
         unlisten = await listen("hello-event", (event) => {
           // @ts-ignore
-          const content = event.payload.content;
-          console.log('clipboard changed', content)
+          const content = event?.payload?.content;
+          console.log('clipboard changed', event)
+          if (!content) return;
+          emit("front-event")
           setItems((prevState) => [{value: content}, ...prevState,])
         })
       })()
