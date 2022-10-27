@@ -1,3 +1,11 @@
+use cocoa::appkit::{NSApp, NSApplication, NSApplicationPresentationOptions, NSEvent, NSRunningApplication, NSTabViewItem, NSWindow};
+use cocoa::base::{id, nil};
+
+pub trait PlatformAction {
+    fn send_short_cut() {}
+    fn get_current_window() {}
+}
+
 
 #[cfg(target_os = "macos")]
 pub fn send_short_cut() {
@@ -14,6 +22,16 @@ pub fn send_short_cut() {
     v_down.post(CGEventTapLocation::HID);
     v_up.post(CGEventTapLocation::HID);
     command_up.post(CGEventTapLocation::HID);
+}
+
+#[cfg(target_os = "macos")]
+pub unsafe fn get_current_window() -> id {
+    let current_app = NSRunningApplication::currentApplication(nil);
+    // msg_send;
+    NSApp().setPresentationOptions_(
+        NSApplicationPresentationOptions::NSApplicationPresentationDisableAppleMenu
+    );
+    return current_app;
 }
 
 #[cfg(target_os = "windows")]
