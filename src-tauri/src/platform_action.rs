@@ -1,4 +1,6 @@
+#[cfg(target_os = "macos")]
 use cocoa::appkit::{NSApp, NSApplication, NSApplicationPresentationOptions, NSEvent, NSRunningApplication, NSTabViewItem, NSWindow};
+#[cfg(target_os = "macos")]
 use cocoa::base::{id, nil};
 
 pub trait PlatformAction {
@@ -36,3 +38,9 @@ pub unsafe fn get_current_window() -> id {
 
 #[cfg(target_os = "windows")]
 pub fn send_short_cut() {}
+
+#[cfg(target_os = "linux")]
+pub fn send_short_cut() {}
+
+#[cfg(target_os = "linux")]
+pub fn get_current_window() {}

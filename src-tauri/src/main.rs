@@ -6,9 +6,6 @@ windows_subsystem = "windows"
 mod clipboard_watch;
 mod platform_action;
 
-use std::any::Any;
-use cocoa::appkit::NSWindow;
-use cocoa::base::{nil, YES};
 use tauri::{App, CustomMenuItem, GlobalShortcutManager, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 use crate::platform_action::{get_current_window, send_short_cut};
 
@@ -29,7 +26,7 @@ fn main() {
             });
             app.global_shortcut_manager().register("CommandOrControl+Shift+V", move || {
                 unsafe {
-                    get_current_window();
+                    // get_current_window();
                 }
                 let is_visible = window.is_visible().unwrap();
                 if is_visible {
